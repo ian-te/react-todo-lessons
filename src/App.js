@@ -1,4 +1,8 @@
 import deepFreeze from 'deep-freeze';
+import React, { Component  } from 'react';
+import ReactDOM from 'react-dom'
+
+
 import expect from 'expect';
 import {
     createStore,
@@ -83,81 +87,61 @@ store.dispatch({
 console.log(store.getState());
 
 store.dispatch({
-    type: 'ADD_TODO',
-    id: 0,
-    text: 'Something'
-})
-store.dispatch({
     type: 'SET_VISIBILITY_FILTER',
     filter: 'SHOW_COMPLETED'
 
 })
-
-console.log(store.getState());
-
-
-const testAddTodo = () => {
-    const stateBefore = [];
-    const action = {
-        type: 'ADD_TODO',
-        id: 0,
-        text: 'Learn something cool'
-    };
-
-    const stateAfter = [{
-        id: 0,
-        text: 'Learn something cool',
-        completed: false
-    }];
-    deepFreeze(stateBefore);
-    deepFreeze(action);
-
-    expect(todos(stateBefore, action))
-        .toEqual(stateAfter)
-}
-
-const testToggleTodo = () => {
-    const stateBefore = [{
-        id: 0,
-        text: 'Some cool todo',
-        completed: false
-    },{
-        id: 1,
-        text: 'Go shopping',
-        completed: false
-    }]
-    const action = {
-        type: 'TOGGLE_TODO',
-        id: 1
+let nextTodoId = 0;
+class App extends Component {
+    render() {
+        return (
+            <div>
+                <input ref={node => {
+                        this.input = node
+                    }}/>
+                <button onClick={()=>{
+                    store.dispatch({
+                        type: 'ADD_TODO',
+                        text: this.input.value,
+                        id: nextTodoId ++
+                    })
+                    this.input.value = '';
+                }}>
+                    Add TODO
+                </button>
+                <ul>
+                    {this.props.todos.map(todo =>
+                        <li key={todo.id} onClick={() => {
+                                store.dispatch({
+                                    type: 'TOGGLE_TODO',
+                                    id: todo.id
+                                })
+                            }}
+                            style={{
+                                textDecoration: todo.completed ? 'line-through' : 'none'
+                            }}>
+                            {todo.text}
+                        </li>
+                    )}
+                </ul>
+            </div>
+        )
     }
-    const stateAfter = [{
-        id: 0,
-        text: 'Some cool todo',
-        completed: false
-    },{
-        id: 1,
-        text: 'Go shopping',
-        completed: true
-    }]
-
-    deepFreeze(stateBefore)
-    deepFreeze(action)
-
-    expect(todos(stateBefore, action))
-        .toEqual(stateAfter)
 }
 
-testToggleTodo()
-testAddTodo()
+const render = () => {
+    ReactDOM.render(
+        <App todos={store.getState().todos} />,
+        document.getElementById('root')
+    )
+}
 
-console.log('test OK')
+store.subscribe(render);
+render();
 
 
-// import React, {Component} from 'react';
-// import './App.css';
-// import Text from './components/Text'
-// import HtmlComment from './components/HtmlComment'
-//
+export default App
+
 // class App extends Component {
 //     constructor() {
 //         super()
