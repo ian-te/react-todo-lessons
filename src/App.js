@@ -10,6 +10,7 @@ import {
 } from 'redux';
 
 
+
 const todo = (state, action) => {
     switch (action.type) {
         case 'ADD_TODO':
@@ -44,7 +45,6 @@ const todos = (state = [], action) => {
         return state.map(t => todo(t, action))
     default:
         return state;
-
     }
 }
 
@@ -88,12 +88,52 @@ console.log(store.getState());
 
 store.dispatch({
     type: 'SET_VISIBILITY_FILTER',
-    filter: 'SHOW_COMPLETED'
+    filter: 'SHOW_ALL'
 
 })
+
+const getVisibleTodos = (todos, filter) => {
+    switch (filter) {
+    case 'SHOW_ALL':
+        return todos;
+    case 'SHOW_COMPLETED':
+        return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+        return todos.filter(t => !t.completed);
+    default:
+
+    }
+}
+
+const FilterLink = ({ filter, currentFilter, children }) => {
+    if(filter==currentFilter) {
+        return <span>{children</a>}</span>
+    }
+    return (
+        <a href=""
+            onClick={e => {
+                e.preventDefault();
+                store.dispatch({
+                    type: 'SET_VISIBILITY_FILTER',
+                    filter
+                })
+            }}>
+            {children}
+        </a>
+    )
+}
+
+
+
+
 let nextTodoId = 0;
 class App extends Component {
     render() {
+        const {
+            todos,
+            visibilityFilter
+        } = this.props
+        const visibleTodos = getVisibleTodos(todos, visibilityFilter)
         return (
             <div>
                 <input ref={node => {
@@ -110,20 +150,32 @@ class App extends Component {
                     Add TODO
                 </button>
                 <ul>
-                    {this.props.todos.map(todo =>
-                        <li key={todo.id} onClick={() => {
-                                store.dispatch({
-                                    type: 'TOGGLE_TODO',
-                                    id: todo.id
-                                })
-                            }}
-                            style={{
-                                textDecoration: todo.completed ? 'line-through' : 'none'
-                            }}>
-                            {todo.text}
-                        </li>
+                    {visibleTodos.map(todo =>
                     )}
                 </ul>
+                <p>
+                    Show: {' '}
+                    <FilterLink
+                        filter='SHOW_ALL'
+                        currentFilter={visibilityFilter}
+                    >
+                        All
+                    </FilterLink>
+                    {' '}
+                    <FilterLink
+                        filter='SHOW_ACTIVE'
+                        currentFilter={visibilityFilter}
+                    >
+                        Active
+                    </FilterLink>
+                    {' '}
+                    <FilterLink
+                        filter='SHOW_COMPLETED'
+                        currentFilter={visibilityFilter}
+                    >
+                        Completed
+                    </FilterLink>
+                </p>
             </div>
         )
     }
@@ -131,7 +183,7 @@ class App extends Component {
 
 const render = () => {
     ReactDOM.render(
-        <App todos={store.getState().todos} />,
+        <App {...store.getState()} />,
         document.getElementById('root')
     )
 }
