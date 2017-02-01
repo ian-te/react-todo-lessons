@@ -1,39 +1,31 @@
 import deepFreeze from 'deep-freeze';
 import expect from 'expect';
 
-const addCounter = (list) => {
-  return [...list, 0];
-};
-
-const removeCounter = (list, index) => {
-  return list.splice(index, 1)
+const toggleTodo = (todo) => {
+    return Object.assign({}, todo, {
+        completed: !todo.completed
+    })
 }
 
-const testAddCounter = () => {
-  const listBefore = [];
-  const listAfter = [0];
-
-  deepFreeze(listBefore)
-
-  expect(
-     addCounter(listBefore)
-  ).toEqual(listAfter)
+const testToggleTodo = () => {
+    const todoBefore = {
+        id: 0,
+        name: 'test todo',
+        completed: false
+    };
+    const todoAfter = {
+        id: 0,
+        name: 'test todo',
+        completed: true
+    }
+    deepFreeze(todoBefore)
+    expect(toggleTodo(todoBefore))
+        .toEqual(todoAfter)
 }
 
-const testRemoveCounter = () => {
-  const listBefore = [1,2,3];
-  const listAfter = [1,3];
+testToggleTodo()
 
-  deepFreeze(listBefore);
-
-  expect(removeCounter(listBefore))
-    .toEqual(listAfter)
-}
-
-testAddCounter()
-testRemoveCounter()
-console.log('test')
-
+console.log('test OK')
 
 
 // import React, {Component} from 'react';
