@@ -95,10 +95,7 @@ const getVisibleTodos = (todos, filter) => {
 }
 
 
-const AddTodo = (
-    props,
-    {store}
-) => {
+let AddTodo = ({ dispatch }) => {
     let input;
     return (
         <div>
@@ -106,7 +103,7 @@ const AddTodo = (
                     input = node
                 }}/>
             <button onClick={()=>{
-                store.dispatch({
+                dispatch({
                     type: 'ADD_TODO',
                     id: nextTodoId++,
                     text: input.value
@@ -118,9 +115,9 @@ const AddTodo = (
         </div>
     )
 }
-AddTodo.contextTypes = {
-    store: React.PropTypes.object
-}
+
+AddTodo = connect()(AddTodo)
+
 const Todo = ({
     onClick,
     completed,
@@ -222,7 +219,7 @@ const Footer = (
         </FilterLink>
     </footer>
 )
-const mapStateToProps = (state) => {
+const mapStateToTodoListProps = (state) => {
     return {
         todos: getVisibleTodos(
             state.todos,
@@ -230,8 +227,7 @@ const mapStateToProps = (state) => {
         )
     }
 }
-
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
     return {
         onTodoClick: (id) =>
             dispatch({
@@ -241,12 +237,10 @@ const mapDispatchToProps = (dispatch) => {
 
     }
 }
-
 import { connect } from 'react-redux';
-
 const VisibleTodoList = connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToTodoListProps,
+    mapDispatchToTodoListProps
 )(TodoList)
 
 const App = () => (
