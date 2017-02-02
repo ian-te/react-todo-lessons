@@ -10,6 +10,7 @@ import {
 } from 'redux';
 
 
+let nextTodoId = 0;
 
 const todo = (state, action) => {
     switch (action.type) {
@@ -200,23 +201,21 @@ FilterLink.contextTypes = {
 
 
 const Footer = (
+    props,
     {store}
 ) => (
     <footer>
         <FilterLink
-            store={store}
             filter='SHOW_ALL'
             >
             All
         </FilterLink>
         <FilterLink
-            store={store}
             filter='SHOW_ACTIVE'
             >
             Active
         </FilterLink>
         <FilterLink
-            store={store}
             filter='SHOW_COMPLETED'
             >
             Completed
@@ -261,14 +260,11 @@ VisibleTodoList.contextTypes = {
 }
 
 
-let nextTodoId = 0;
-const App = ({
-    store,
-}) => (
+const App = () => (
     <div>
-        <AddTodo store={store}/>
-        <VisibleTodoList store={store} />
-        <Footer store={store}/>
+        <AddTodo />
+        <VisibleTodoList  />
+        <Footer />
     </div>
 )
 
