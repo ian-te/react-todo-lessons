@@ -268,19 +268,7 @@ const App = () => (
     </div>
 )
 
-class Provider extends Component {
-    getChildContext() {
-        return {
-            store: this.props.store
-        }
-    }
-    render() {
-        return this.props.children
-    }
-}
-Provider.childContextTypes = {
-    store: React.PropTypes.object
-}
+import { Provider } from 'react-redux';
 
 ReactDOM.render(
     <Provider store={createStore(todoApp)}>
