@@ -162,7 +162,7 @@ const Link = ({
 }
 class FilterLink extends Component {
     componentDidMount () {
-        const store = this.props.store;
+        const store = this.context;
         this.unsubscribe = store.subscribe(() => {
             this.forceUpdate()
         })
@@ -172,7 +172,7 @@ class FilterLink extends Component {
     }
     render() {
         const props = this.props;
-        const store = this.props.store;
+        const store = this.context;
         const state = store.getState();
         return (
             <Link
@@ -217,7 +217,7 @@ const Footer = (
 )
 class VisibleTodoList extends Component {
     componentDidMount () {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() => {
             this.forceUpdate()
         })
@@ -227,7 +227,7 @@ class VisibleTodoList extends Component {
     }
     render() {
         const props = this.props;
-        const { store } = this.props;
+        const { store } = this.context;
         const state = store.getState();
 
         return (
@@ -248,6 +248,9 @@ class VisibleTodoList extends Component {
         )
     }
 }
+VisibleTodoList.contextTypes = {
+    store: React.PropTypes.object
+}
 
 
 let nextTodoId = 0;
@@ -261,12 +264,26 @@ const App = ({
     </div>
 )
 
+class Provider extends Component {
+    getChildContext() {
+        return {
+            store: this.props.store
+        }
+    }
+    render() {
+        return this.props.children
+    }
+}
+Provider.childContextTypes = {
+    store: React.PropTypes.object
+}
+
 ReactDOM.render(
-    <App store={createStore(todoApp)} />,
+    <Provider store={createStore(todoApp)}>
+        <App />
+    </Provider>,
     document.getElementById('root')
 )
-
-
 
 export default App
 
