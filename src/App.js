@@ -94,9 +94,10 @@ const getVisibleTodos = (todos, filter) => {
 }
 
 
-const AddTodo = ({
-    store
-}) => {
+const AddTodo = (
+    props,
+    {store}
+) => {
     let input;
     return (
         <div>
@@ -116,7 +117,9 @@ const AddTodo = ({
         </div>
     )
 }
-
+AddTodo.contextTypes = {
+    store: React.PropTypes.object
+}
 const Todo = ({
     onClick,
     completed,
@@ -162,7 +165,7 @@ const Link = ({
 }
 class FilterLink extends Component {
     componentDidMount () {
-        const store = this.context;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() => {
             this.forceUpdate()
         })
@@ -172,7 +175,7 @@ class FilterLink extends Component {
     }
     render() {
         const props = this.props;
-        const store = this.context;
+        const { store } = this.context;
         const state = store.getState();
         return (
             <Link
@@ -191,6 +194,11 @@ class FilterLink extends Component {
         );
     }
 }
+FilterLink.contextTypes = {
+    store: React.PropTypes.object
+}
+
+
 const Footer = (
     {store}
 ) => (
@@ -229,7 +237,7 @@ class VisibleTodoList extends Component {
         const props = this.props;
         const { store } = this.context;
         const state = store.getState();
-
+        console.log(store.getState())
         return (
             <TodoList
                 todos={
@@ -255,7 +263,7 @@ VisibleTodoList.contextTypes = {
 
 let nextTodoId = 0;
 const App = ({
-    store
+    store,
 }) => (
     <div>
         <AddTodo store={store}/>
