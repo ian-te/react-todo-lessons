@@ -107,7 +107,7 @@ const getVisibleTodos = (todos, filter) => {
 
 const FilterLink = ({ filter, currentFilter, children }) => {
     if(filter==currentFilter) {
-        return <span>{children</a>}</span>
+        return <span>{children}</span>
     }
     return (
         <a href=""
@@ -123,8 +123,30 @@ const FilterLink = ({ filter, currentFilter, children }) => {
     )
 }
 
-
-
+const Todo = ({
+    onClick,
+    completed,
+    text
+}) => (
+    <li onClick={onClick}
+        style={{
+            textDecoration: completed ? 'line-through' : 'none'
+        }}>
+        {text}
+    </li>
+)
+const TodoList = ({
+    todos,
+    onTodoClick
+}) => (
+    <ul>
+        {todos.map(todo =>
+            <Todo key={todo.id}
+                {...todo}
+                onClick={() => onTodoClick(todo.id)}
+            />)}
+    </ul>
+)
 
 let nextTodoId = 0;
 class App extends Component {
@@ -149,10 +171,14 @@ class App extends Component {
                 }}>
                     Add TODO
                 </button>
-                <ul>
-                    {visibleTodos.map(todo =>
-                    )}
-                </ul>
+                <TodoList
+                    todos={visibleTodos}
+                    onTodoClick={id =>
+                        store.dispatch({
+                            type: 'TOGGLE_TODO',
+                            id
+                        })}
+                />
                 <p>
                     Show: {' '}
                     <FilterLink
